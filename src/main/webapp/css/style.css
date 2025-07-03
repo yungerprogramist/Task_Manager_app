@@ -1,0 +1,43 @@
+body {
+    background: linear-gradient(162deg, #ffe374 0%, #feac40 100%);
+}
+
+
+.container {
+    margin-top: 125px;
+    margin-left: 40px;
+}
+
+
+.task-block {
+    background-color: red;
+    display: flex;
+    margin-bottom: 20px;
+    width: 750px;
+    height: 88px;
+
+}
+
+#sqare-task {
+    background-color: white;
+    height: 55px;
+    width: 55px;
+    margin-top: 16px;
+
+
+}
+
+
+#text-task {
+    background-color: white;
+}
+
+
+#basket-task {
+    width: 30px;
+    height: 39px;
+
+    margin-top: 16px;
+    margin-left: auto;
+    margin-right: 0px;
+}
