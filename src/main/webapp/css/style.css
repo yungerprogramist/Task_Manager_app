@@ -3,41 +3,97 @@ body {
 }
 
 
-.container {
+.task-container {
     margin-top: 125px;
     margin-left: 40px;
 }
 
 
 .task-block {
-    background-color: red;
     display: flex;
     margin-bottom: 20px;
     width: 750px;
     height: 88px;
-
 }
 
-#sqare-task {
+.sqare-task {
     background-color: white;
     height: 55px;
     width: 55px;
     margin-top: 16px;
-
-
 }
 
 
-#text-task {
+.text-task-block {
+    width: 615px;
+    height: 88px;
+    margin-left: 25px;
+    border-radius: 100px;
     background-color: white;
 }
 
+.text-task {
+    margin-top: 17px;
+    margin-left: 20px;
+    font-size: 50px;
+    overflow: hidden;
+}
 
-#basket-task {
+
+.basket-task {
     width: 30px;
-    height: 39px;
+    height: 38px;
 
-    margin-top: 16px;
+    margin-top: 25px;
     margin-left: auto;
     margin-right: 0px;
+}
+
+
+.ananas-container {
+    display: flex;
+    position: absolute;
+    right: 35px;
+    bottom: 40px;
+    width: 184px;
+    height: 118px;
+}
+
+
+.basket-block {
+
+    background-color: red;
+    position: absolute;
+    right: 0px;
+    bottom: 0;
+    border-radius: 50%;
+    width: 57px;
+    height: 57px;
+
+}
+
+.plus-block {
+
+    background-color: white;
+    border-radius: 50%;
+    width: 118px;
+    height: 118px;
+}
+
+
+
+#plus {
+    position: absolute;
+    top: 20%;
+    left: 15%;
+    width: 70px;
+    height: 70px;
+}
+
+#basket {
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    width: 19px;
+    height: 24px;
 }
