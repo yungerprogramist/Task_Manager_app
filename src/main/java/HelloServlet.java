@@ -25,6 +25,6 @@ public class HelloServlet extends HttpServlet {
 
         String json = x.toJson(data);
         writer.print(json);
-        writer.flush();//jfbnsdjfbjsdbsdfbjsdfb
+        writer.flush();
     }
 }

@@ -22,6 +22,5 @@ test {
 }
 
 war {
-    archiveFileName = 'tasks.war'
+    archiveFileName = 'TasksManager.war'
 }
-
