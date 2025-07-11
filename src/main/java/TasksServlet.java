@@ -43,9 +43,6 @@ public class TasksServlet extends HttpServlet {
         resp.setContentType("text/html");
         resp.setCharacterEncoding("UTF-8");
 
-
-
-
         String newTask = req.getParameter("new_task");
         tasks.add(newTask);
 
