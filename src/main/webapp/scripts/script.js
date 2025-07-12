@@ -9,7 +9,7 @@ fetch('http://localhost:8080/TasksManager/tasks')
     // Обработка ответа
     console.log(data);
     const container = document.getElementById('task-container');
-    const tasks = Object.entries(data.tasks); 
+    const tasks = Object.entries(data.tasks);
 
     tasks.forEach(([id, taskName]) => {
       const taskElement = document.createElement('div');
@@ -28,10 +28,33 @@ fetch('http://localhost:8080/TasksManager/tasks')
       container.appendChild(taskElement);
     });
 
-    
+
 
   })
   .catch(error => {
     // Обработка ошибок
     console.error('Fetch error:', error);
   });
+
+
+
+function addTask() {
+  const userText = document.getElementById('task').value;
+
+  fetch('/TasksManager/tasks', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text: userText }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Успешно:', data);
+      alert('Данные отправлены!');
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+      alert('Ошибка отправки!');
+    });
+}

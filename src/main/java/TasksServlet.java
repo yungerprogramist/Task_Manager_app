@@ -13,16 +13,15 @@ import java.util.*;
 
 @WebServlet("/tasks")
 public class TasksServlet extends HttpServlet {
+    private final Gson gson = new Gson();
     List<String> tasks = new ArrayList<>(Arrays.asList("task1", "task2", "task3"));
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        Gson gsonFile = new Gson();
-//        Map<String, List> tasksData= new HashMap<String, List>(1);
-//        tasksData.put("tasks", tasks);
+        Gson gson = new Gson();
         Map<String, Map<Integer, String>> tasksData = new HashMap<>(1);
         Map<Integer, String> tasksMap = new HashMap<>();
 
@@ -32,24 +31,31 @@ public class TasksServlet extends HttpServlet {
         tasksData.put("tasks", tasksMap);
 
 
-        PrintWriter writer = resp.getWriter();
-        String json = gsonFile.toJson(tasksData);
-        writer.print(json);
+        PrintWriter writer = response.getWriter();
+        String gsonFile = gson.toJson(tasksData);
+        writer.print(gsonFile);
         writer.flush();
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/html");
-        resp.setCharacterEncoding("UTF-8");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String newTask = req.getParameter("new_task");
-        tasks.add(newTask);
 
-        String path = "/index.html";
-        ServletContext servletContext = getServletContext();
-        RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher(path);
-        requestDispatcher.forward(req, resp);
+        Map<String, Object> data = gson.fromJson(
+                request.getReader(),  // Источник данных (InputStreamReader)
+                Map.class             // Тип, в который парсим (можно заменить на свой класс)
+        );
+        String text = (String) data.get("text");
+        
+        tasks.add(text);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("status", "success");
+        responseData.put("receivedText", text);
+
+        String jsonResponse = gson.toJson(responseData);
+        response.getWriter().write(jsonResponse);
+
 
 
 

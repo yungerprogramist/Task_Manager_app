@@ -14,36 +14,37 @@
 
 <body>
 
-<form action="tasks" method="POST">
-    <input name="new_task"/>
-    <input type="submit" value="Submit" />
-</form>
+    <input name="new_task" id="task" />
+    <button onclick="addTask()">Добавить</button>
+    <button onclick="deleteTask()">Удалить</button>
 
-<div id="task-container">
-
-<!--    <div class="task-block">-->
-<!--        <div class="sqare-task"></div>-->
-
-<!--        <div class="text-task-block">-->
-<!--            <p class="text-task">Текст заметки</p>-->
-<!--        </div>-->
-
-<!--        <img src="./img/Basket.png" alt="" class="basket-task">-->
-<!--    </div>-->
-
-</div>
+    <div id="task-container">
 
 
-<div class="ananas-container">
-    <div class="plus-block">
-        <img src="./img/plus.png" alt="" id="plus">
+
+        <!--    <div class="task-block">-->
+        <!--        <div class="sqare-task"></div>-->
+
+        <!--        <div class="text-task-block">-->
+        <!--            <p class="text-task">Текст заметки</p>-->
+        <!--        </div>-->
+
+        <!--        <img src="./img/Basket.png" alt="" class="basket-task">-->
+        <!--    </div>-->
+
     </div>
 
-    <div class="basket-block">
-        <img src="./img/Basket_small.png" alt="" id="basket">
-    </div>
 
-</div>
+    <div class="ananas-container">
+        <div class="plus-block">
+            <img src="./img/plus.png" alt="" id="plus">
+        </div>
+
+        <div class="basket-block">
+            <img src="./img/Basket_small.png" alt="" id="basket">
+        </div>
+
+    </div>
 </body>
 
 </html>
