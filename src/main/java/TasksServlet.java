@@ -39,26 +39,51 @@ public class TasksServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
+        Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
 
-        Map<String, Object> data = gson.fromJson(
-                request.getReader(),  // Источник данных (InputStreamReader)
-                Map.class             // Тип, в который парсим (можно заменить на свой класс)
-        );
+        String method = (String) data.get("action");
         String text = (String) data.get("text");
-        
-        tasks.add(text);
+
+        String idTask = new String();
+        if (method.equals("addTask")) {
+            tasks.add(text);
+            idTask = String.valueOf(tasks.size());
+        } else if (method.equals("deleteTask")) {
+            idTask = String.valueOf(tasks.indexOf(text)+1);
+            tasks.remove(text);
+        }else{
+            System.err.println("err");
+        }
 
         Map<String, Object> responseData = new HashMap<>();
+
         responseData.put("status", "success");
-        responseData.put("receivedText", text);
+        responseData.put("idTask", idTask);
+        responseData.put("Text", text);
+        System.err.println(responseData.get("idTask"));
 
         String jsonResponse = gson.toJson(responseData);
         response.getWriter().write(jsonResponse);
 
-
-
-
-
     }
+
+
+//    @Override
+//    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//
+//         Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
+//
+//         String text = (String) data.get("text");
+//         tasks.remove(text);
+//         Map<String, Object> responseData = new HashMap<>();
+//        responseData.put("status", "success");
+//        responseData.put("deleteText", text);
+//        String jsonResponse = gson.toJson(responseData);
+//        response.getWriter().write(jsonResponse);
+//    }
 }
