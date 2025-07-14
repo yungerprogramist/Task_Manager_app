@@ -11,7 +11,7 @@ fetch('http://localhost:8080/TasksManager/tasks')
     console.log(data);
     const container = document.getElementById('task-container');
     const tasks = Object.entries(data.tasks);
-
+    var count = 1;
     tasks.forEach(([id, taskName]) => {
       const taskElement = document.createElement('div');
       taskElement.className = 'task-block';
@@ -20,12 +20,13 @@ fetch('http://localhost:8080/TasksManager/tasks')
           <div class="sqare-task"></div>
 
           <div class="text-task-block">
-              <p class="text-task">${id}. ${taskName}</p>
+              <p class="text-task">${count}. ${taskName}</p>
           </div>
 
           <img src="./img/Basket.png" alt="" class="basket-task">
       `;
       container.appendChild(taskElement);
+      count++;
     });
   })
   .catch(error => {
@@ -44,7 +45,6 @@ function addTask() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      action: 'addTask',
       text: userText
     }),
   })
@@ -80,12 +80,11 @@ function deleteTask() {
   const userText = document.getElementById('task').value;
 
   fetch('/TasksManager/tasks', {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      action: 'deleteTask',
       text: userText
     }),
   })

@@ -44,26 +44,15 @@ public class TasksServlet extends HttpServlet {
 
         Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
 
-        String method = (String) data.get("action");
         String text = (String) data.get("text");
-
-        String idTask = new String();
-        if (method.equals("addTask")) {
-            tasks.add(text);
-            idTask = String.valueOf(tasks.size());
-        } else if (method.equals("deleteTask")) {
-            idTask = String.valueOf(tasks.indexOf(text)+1);
-            tasks.remove(text);
-        }else{
-            System.err.println("err");
-        }
+        tasks.add(text);
+        String idTask = String.valueOf(tasks.size());
 
         Map<String, Object> responseData = new HashMap<>();
-
         responseData.put("status", "success");
         responseData.put("idTask", idTask);
         responseData.put("Text", text);
-        System.err.println(responseData.get("idTask"));
+
 
         String jsonResponse = gson.toJson(responseData);
         response.getWriter().write(jsonResponse);
@@ -71,19 +60,23 @@ public class TasksServlet extends HttpServlet {
     }
 
 
-//    @Override
-//    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
-//
-//         Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
-//
-//         String text = (String) data.get("text");
-//         tasks.remove(text);
-//         Map<String, Object> responseData = new HashMap<>();
-//        responseData.put("status", "success");
-//        responseData.put("deleteText", text);
-//        String jsonResponse = gson.toJson(responseData);
-//        response.getWriter().write(jsonResponse);
-//    }
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
+
+        String text = (String) data.get("text");
+        String idTask = String.valueOf(tasks.indexOf(text)+1);
+        tasks.remove(text);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("status", "success");
+        responseData.put("idTask", idTask);
+        responseData.put("deleteText", text);
+
+        String jsonResponse = gson.toJson(responseData);
+        response.getWriter().write(jsonResponse);
+    }
 }
