@@ -4,7 +4,7 @@ fetch('http://localhost:8080/TasksManager/tasks')
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json(); 
+    return response.json();
   })
   .then(data => {
     console.log(data);
@@ -14,7 +14,7 @@ fetch('http://localhost:8080/TasksManager/tasks')
     tasks.forEach(([id, taskName]) => {
       const taskElement = document.createElement('div');
       taskElement.className = 'task-block';
-      taskElement.id = 'task-block-id-' + id;
+      taskElement.idTask = id;
       taskElement.innerHTML = `
           <div class="sqare-task"></div>
 
@@ -48,13 +48,14 @@ function addTask() {
     .then(response => response.json())
     .then(data => {
       console.log('Успешно:', data);
-      alert('Данные отправлены!');
       const id = data.idTask
-      document.getElementById('task').value = ''; 
+      document.getElementById('task').value = '';
       const container = document.getElementById('task-container');
       const taskElement = document.createElement('div');
+
       taskElement.className = 'task-block';
-      taskElement.id = 'task-block-id-' + id;
+      // taskElement.id = 'task-block-id-' + id;
+      taskElement.idTask = id;
       taskElement.innerHTML = `
             <div class="sqare-task"></div>
 
@@ -65,6 +66,7 @@ function addTask() {
             <img src="./img/Basket.png" alt="" class="basket-task">
         `;
       container.appendChild(taskElement);
+      updateTaskNumbers();
 
     })
     .catch(error => {
@@ -73,8 +75,28 @@ function addTask() {
     });
 }
 
+
+
+
 function deleteTask() {
-  const idTask = document.getElementById('task').value;
+  const listNumber = parseInt(document.getElementById('task').value);
+
+  if (isNaN(listNumber)) {
+    alert('Пожалуйста, введите корректный номер задачи');
+    return;
+  }
+
+  const container = document.getElementById('task-container');
+  const taskBlocks = container.getElementsByClassName('task-block');
+
+  if (listNumber < 1 || listNumber > taskBlocks.length) {
+    alert('Номер задачи за пределами диапазона');
+    return;
+  }
+
+  const taskToDelete = taskBlocks[listNumber - 1];
+  // const idTask = taskToDelete.idTask || taskToDelete.id.replace('task-block-id-', '');
+  const idTask = parseInt(taskToDelete.idTask);
 
   fetch('/TasksManager/tasks', {
     method: 'DELETE',
@@ -82,21 +104,19 @@ function deleteTask() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      text: idTask
+      id: idTask
     }),
   })
     .then(response => response.json())
     .then(data => {
       console.log('Успешно:', data);
-      alert('Данные отправлены!');
-      if (data.status == 'error'){
+      if (data.status == 'error') {
         console.log(data.info);
         return;
       }
+
       document.getElementById('task').value = '';
-      const id = data.idTask;
-      const element = document.getElementById('task-block-id-' + id);
-      element.remove(); 
+      taskToDelete.remove();
 
       updateTaskNumbers();
     })
@@ -110,12 +130,12 @@ function deleteTask() {
 function updateTaskNumbers() {
   const container = document.getElementById('task-container');
   const taskBlocks = container.getElementsByClassName('task-block');
-  
+
   // Перебираем все задачи и обновляем их номера
   for (let i = 0; i < taskBlocks.length; i++) {
     const taskBlock = taskBlocks[i];
     const textElement = taskBlock.querySelector('.text-task');
-    
+
     // Обновляем текст, сохраняя оригинальное название задачи
     const originalText = textElement.textContent.split('. ').slice(1).join('. ');
     textElement.textContent = `${i + 1}. ${originalText}`;

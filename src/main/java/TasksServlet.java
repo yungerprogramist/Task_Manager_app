@@ -56,36 +56,45 @@ public class TasksServlet extends HttpServlet {
 
 
     @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        Map<String, Object> responseData = new HashMap<>();
+
+        Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
+        Number idNumber = (Number) data.get("id");
+        int idTask = idNumber.intValue();
+        String newText = (String) data.get("text");
+
+        tasksDB.put(idTask, newText);
+        responseData.put("status", "success");
+        String jsonResponse = gson.toJson(responseData);
+        response.getWriter().write(jsonResponse);
+    }
+
+    @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         Map<String, Object> responseData = new HashMap<>();
 
         Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
-        String text = (String) data.get("text");
+        Number idNumber = (Number) data.get("id");
+        int idTask = idNumber.intValue();
 
-        if (!tasksDB.containsValue(text)){
+        if (!tasksDB.containsKey(idTask)){
             responseData.put("status", "error");
-            responseData.put("info", "text is empty (NULL text)");
+            responseData.put("info", "id is not exist (id = NULL)");
             String jsonResponse = gson.toJson(responseData);
             response.getWriter().write(jsonResponse);
             return;
         }
-
-        Integer idTask = 0;
-        for (Map.Entry<Integer, String> entry : tasksDB.entrySet()) {
-            if (text.equals(entry.getValue())) {
-                idTask = entry.getKey();
-                break;
-            }
-        }
         tasksDB.remove(idTask);
 
-//        tasksDB.entrySet().removeIf(entry -> text.equals(entry.getValue()));
 
         responseData.put("status", "success");
         responseData.put("idTask", idTask);
-        responseData.put("deleteText", text);
+        responseData.put("deleteText", tasksDB.get(idTask));
 
         String jsonResponse = gson.toJson(responseData);
         response.getWriter().write(jsonResponse);

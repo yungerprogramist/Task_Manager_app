@@ -24,7 +24,8 @@ public class test {
             tasksDB.put(i + 1, tasks.get(i));
         } // del
 
-        tasksDB.entrySet().removeIf(entry -> "task1".equals(entry.getValue()));
+        System.err.println(tasksDB.toString());
+        tasksDB.put(1, "qwer");
         System.err.println(tasksDB.toString());
     }
 }
