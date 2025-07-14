@@ -4,10 +4,9 @@ fetch('http://localhost:8080/TasksManager/tasks')
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json(); // или response.json() если ожидается JSON
+    return response.json(); 
   })
   .then(data => {
-    // Обработка ответа
     console.log(data);
     const container = document.getElementById('task-container');
     const tasks = Object.entries(data.tasks);
@@ -20,20 +19,18 @@ fetch('http://localhost:8080/TasksManager/tasks')
           <div class="sqare-task"></div>
 
           <div class="text-task-block">
-              <p class="text-task">${count}. ${taskName}</p>
+              <p class="text-task">${count++}. ${taskName}</p>
           </div>
 
           <img src="./img/Basket.png" alt="" class="basket-task">
       `;
       container.appendChild(taskElement);
-      count++;
     });
   })
   .catch(error => {
     // Обработка ошибок
     console.error('Fetch error:', error);
   });
-
 
 
 function addTask() {
@@ -53,7 +50,7 @@ function addTask() {
       console.log('Успешно:', data);
       alert('Данные отправлены!');
       const id = data.idTask
-      document.getElementById('task').value = ''; // Очищаем поле ввода
+      document.getElementById('task').value = ''; 
       const container = document.getElementById('task-container');
       const taskElement = document.createElement('div');
       taskElement.className = 'task-block';
@@ -77,7 +74,7 @@ function addTask() {
 }
 
 function deleteTask() {
-  const userText = document.getElementById('task').value;
+  const idTask = document.getElementById('task').value;
 
   fetch('/TasksManager/tasks', {
     method: 'DELETE',
@@ -85,20 +82,42 @@ function deleteTask() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      text: userText
+      text: idTask
     }),
   })
     .then(response => response.json())
     .then(data => {
       console.log('Успешно:', data);
       alert('Данные отправлены!');
+      if (data.status == 'error'){
+        console.log(data.info);
+        return;
+      }
       document.getElementById('task').value = '';
-      const id = data.idTask
+      const id = data.idTask;
       const element = document.getElementById('task-block-id-' + id);
-      element.remove(); // Удаляет элемент из DOM
+      element.remove(); 
+
+      updateTaskNumbers();
     })
     .catch(error => {
       console.error('Ошибка:', error);
       alert('Ошибка отправки!');
     });
+}
+
+
+function updateTaskNumbers() {
+  const container = document.getElementById('task-container');
+  const taskBlocks = container.getElementsByClassName('task-block');
+  
+  // Перебираем все задачи и обновляем их номера
+  for (let i = 0; i < taskBlocks.length; i++) {
+    const taskBlock = taskBlocks[i];
+    const textElement = taskBlock.querySelector('.text-task');
+    
+    // Обновляем текст, сохраняя оригинальное название задачи
+    const originalText = textElement.textContent.split('. ').slice(1).join('. ');
+    textElement.textContent = `${i + 1}. ${originalText}`;
+  }
 }
