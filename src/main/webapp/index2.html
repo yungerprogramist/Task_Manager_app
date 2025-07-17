@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskManager</title>
+
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style2.css">
+
+    <script src="./scripts/script2.js"></script>
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo-block">
+            <h1 id="logo">memories.ru</h1>
+        </div>
+
+        <div class="navigation">
+            <a href="" class="navigation-element">links</a>
+            <a href="" class="navigation-element">tasks</a>
+            <a href="" class="navigation-element">notes</a>
+        </div>
+
+        <div class="account-block">
+            <p class="account-name">personal account</p>
+            <img class="account-img" src="./img/account-icon.png" alt="err">
+        </div>
+    </header>
+
+    <div class="super-block">
+        <div id="task-container">
+
+            <div class="task-block">
+
+                <button class="delete-task" onclick="">
+                    <img src="./img/basket copy.png" alt="">
+                </button>
+
+                <div class="text-task-block">
+                    <p class="number-task">1.</p>
+                    <input class="input-task" type="text" placeholder="Введите текст" value="text">
+                </div>
+
+                <button class="edit-block" onclick="handleAccountClick()">
+                    <img src="./img/pen-editor.png" alt="err">
+                </button>
+            </div>
+
+        </div>
+
+        <div class="change-panel-block">
+
+            <div class="text_new_task">
+                <input id="input-new-task" type="text" placeholder="Введите текст ...">
+            </div>
+
+            <div class="right-buttons">
+
+                <button class="basket-block" onclick="deleteTask()">
+                    <img src="./img/basket copy.png" alt="err">
+                </button>
+
+
+                <button class="plus-block" onclick="addTask()">
+                    <img class="plus" src="./img/plus copy.png" alt="err">
+                </button>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="info-block">
+        <h1 class="head-name">Notes</h1>
+
+        <p class="info-text-1">В современном мире, где информация обновляется с огромной скоростью, умение эффективно
+            фиксировать и систематизировать знания становится критически важным.</p>
+
+        <p class="info-text-2">Электронные заметки — это не просто удобный инструмент, а мощный способ повысить
+            продуктивность, сохранить ценные идеи и оптимизировать процесс обучения или работы.</p>
+    </div>
+
+
+    <script src="./scripts/script2.js"></script>
+</body>
+
+</html>
