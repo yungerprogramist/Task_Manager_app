@@ -4,49 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>TaskManager</title>
 
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/style.css">
 
-    <script src="./scripts/script.js"></script>
+    <!-- <script src="./scripts/script.js"></script> -->
+
 </head>
 
 <body>
+    <header class="header">
+        <div class="logo-block">
+            <h1 id="logo">memories.ru</h1>
+        </div>
 
+        <div class="navigation">
+            <a href="" class="navigation-element">links</a>
+            <a href="" class="navigation-element">tasks</a>
+            <a href="" class="navigation-element">notes</a>
+        </div>
 
-    <input name="new_task" id="task" />
-    <button onclick="addTask()">Добавить</button>
-    <button onclick="deleteTask()">Удалить</button>
+        <div class="account-block">
+            <p class="account-name">personal account</p>
+            <img class="account-img" src="./img/account-icon.png" alt="err">
+        </div>
+    </header>
 
-    <div id="task-container">
+    <div class="super-block">
+        <div id="task-container">
 
+        </div>
 
+        <div class="change-panel-block">
 
-        <!-- <div class="task-block" id="task-block-id-1">
-            <div class="sqare-task"></div>
-
-            <div class="text-task-block">
-                <p class="text-task">Текст заметки</p>
-                <input class="text-task" type="text" value="Введите ваш текст">
+            <div class="text_new_task">
+                <input id="input-new-task" type="text" placeholder="Введите текст ...">
             </div>
 
-            <img src="./img/Basket.png" alt="" class="basket-task">
-        </div> -->
+            <div class="right-buttons">
+
+                <button class="basket-block" onclick="deleteTask()">
+                    <img src="./img/basket.png" alt="err">
+                </button>
+
+
+                <button class="plus-block" onclick="addTask()">
+                    <img class="plus" src="./img/plus.png" alt="err">
+                </button>
+
+            </div>
+        </div>
+
 
     </div>
 
+    <div class="info-block">
+        <h1 class="head-name">Notes</h1>
 
-    <div class="ananas-container">
-        <div class="plus-block">
-            <img src="./img/plus.png" alt="" id="plus">
-        </div>
+        <p class="info-text-1">В современном мире, где информация обновляется с огромной скоростью, умение эффективно
+            фиксировать и систематизировать знания становится критически важным.</p>
 
-        <div class="basket-block">
-            <img src="./img/Basket_small.png" alt="" id="basket">
-        </div>
-
+        <p class="info-text-2">Электронные заметки — это не просто удобный инструмент, а мощный способ повысить
+            продуктивность, сохранить ценные идеи и оптимизировать процесс обучения или работы.</p>
     </div>
+
+
+    <script src="./scripts/script.js"></script>
 </body>
 
 </html>
