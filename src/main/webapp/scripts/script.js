@@ -7,45 +7,73 @@ fetch('http://localhost:8080/TasksManager/tasks')
     })
     .then(data => {
         console.log(data);
-        const container = document.getElementById('task-container');
         const tasks = Object.entries(data.tasks);
-        var count = 1;
-        tasks.forEach(([id, taskName]) => {
-            const taskElement = document.createElement('div');
-            taskElement.className = 'task-block';
-            taskElement.setAttribute('data-id', id);
-            taskElement.innerHTML = `
-                <button class="delete-task" onclick="deleteTaskTapBasket(${id})">
-                    <img src="./img/basket.png" alt="">
-                </button>
-
-                <div class="text-task-block">
-                    <p class="number-task">${count++}</p>
-                    <input class="input-task" type="text" value="${taskName}">
-                </div>
-
-                <button class="edit-block" onclick="updateTask(${id})">
-                    <img src="./img/pen-editor.png" alt="err">
-                </button>
-            `;
-            container.appendChild(taskElement);
-
+        tasks.forEach(([id, taskText]) => {
+            createTaskBlock(id, taskText);
         });
+        updateTaskNumbers();
     })
     .catch(error => {
         console.error('Fetch error:', error);
     });
 
 
-function deleteTasksFromContainer(){
-    const container = document.getElementById('task-container');
-    const taskBlocks = container.getElementsByClassName('task-block');
 
-    for (let i = 0; i < taskBlocks.length; i++) {
-        const taskBlock = taskBlocks[i];
-        taskBlock.remove()
-    }
+function createTaskBlock(id, taskText){
+  const container = document.getElementById('task-container');
+  const taskElement = document.createElement('div');
+  taskElement.className = 'task-block';
+  taskElement.setAttribute('data-id', id);
+  taskElement.innerHTML = `
+      <button class="delete-task" onclick="deleteTaskTapBasket(${id})">
+          <img src="./img/basket.png" alt="">
+      </button>
+
+      <div class="text-task-block">
+          <p class="number-task">number</p>
+          <input class="input-task" type="text" value="${taskText}">
+      </div>
+
+      <button class="edit-block" onclick="updateTask(${id})">
+          <img src="./img/pen-editor.png" alt="err">
+      </button>
+  `;
+  container.appendChild(taskElement);
 }
+
+function searchTasks(){
+
+    const userText = document.getElementById('input-new-task').value;
+
+    fetch(`http://localhost:8080/TasksManager/tasks?search-text=${userText}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        const container = document.getElementById('task-container');
+        // const taskBlocks = container.getElementsByClassName('task-block');
+        // for (let i = 0; i < taskBlocks.length; i++) {
+        //     const taskBlock = taskBlocks[i];
+        //     taskBlock.remove()
+        // }
+        container.innerHTML = '';
+
+        const tasks = Object.entries(data.tasks);
+        tasks.forEach(([id, taskText]) => {
+            createTaskBlock(id, taskText);
+        });
+        updateTaskNumbers();
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+    });
+
+}
+
 
 function addTask() {
     const userText = document.getElementById('input-new-task').value;
@@ -64,26 +92,7 @@ function addTask() {
             console.log('Успешно:', data);
             const id = data.idTask;
             document.getElementById('input-new-task').value = '';
-            const container = document.getElementById('task-container');
-            const taskElement = document.createElement('div');
-
-            taskElement.className = 'task-block';
-            taskElement.setAttribute('data-id', id);
-            taskElement.innerHTML = `
-                <button class="delete-task" onclick="deleteTaskTapBasket(${id})">
-                    <img src="./img/basket.png" alt="">
-                </button>
-
-                <div class="text-task-block">
-                    <p class="number-task">${1}</p>
-                    <input class="input-task" type="text" value="${userText}">
-                </div>
-
-                <button class="edit-block" onclick="updateTask(${id})">
-                    <img src="./img/pen-editor.png" alt="err">
-                </button>
-        `;
-            container.appendChild(taskElement);
+            createTaskBlock(id, userText);
             updateTaskNumbers();
         })
         .catch(error => {
@@ -94,17 +103,11 @@ function addTask() {
 
 function updateTask(id) {
     const taskElement = document.querySelector(`.task-block[data-id="${id}"]`);
-    // if (!taskElement) {
-    //   console.error('Элемент задачи не найден');
-    //   return;
-    // }
-
+    if (!taskElement) {
+      console.error('Элемент задачи не найден');
+      return;
+    }
     const newText = taskElement.querySelector('.input-task').value;
-
-    // if (!inputElement) {
-    //   console.error('Поле ввода не найдено');
-    //   return;
-    // }
 
     fetch('/TasksManager/tasks', {
         method: 'PUT',

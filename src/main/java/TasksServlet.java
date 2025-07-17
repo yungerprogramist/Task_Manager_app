@@ -1,31 +1,42 @@
 import com.google.gson.Gson;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.Inet4Address;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/tasks")
 public class TasksServlet extends HttpServlet {
     private final Gson gson = new Gson();
-    Map<Integer, String> tasksDB = new HashMap<>();
-    int currentId = 0;
+    private final Map<Integer, String> tasksDB = new HashMap<>();
+    private int currentId = 0;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        Gson gson = new Gson();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        configureResponse(response);
         Map<String, Map<Integer, String>> tasksData = new HashMap<>(1);
-        tasksData.put("tasks", tasksDB);
+
+        String searchText = request.getParameter("search-text");
+
+        if (searchText==null) {
+            tasksData.put("tasks", tasksDB);
+        } else{
+            Map<Integer, String> searchTasks = new HashMap<>();
+
+            for (Map.Entry<Integer, String> entry : tasksDB.entrySet()) {
+                Integer key = entry.getKey();
+                String value = entry.getValue();
+                if (value.contains(searchText)){
+                    searchTasks.put(key, value);
+                }
+            }
+
+            tasksData.put("tasks", searchTasks);
+        }
 
         PrintWriter writer = response.getWriter();
         String gsonFile = gson.toJson(tasksData);
@@ -33,10 +44,14 @@ public class TasksServlet extends HttpServlet {
         writer.flush();
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private static void configureResponse(HttpServletResponse response) {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        configureResponse(response);
 
         Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
         String text = (String) data.get("text");
@@ -49,16 +64,14 @@ public class TasksServlet extends HttpServlet {
         responseData.put("Text", text);
 
 
-        String jsonResponse = gson.toJson(responseData);
-        response.getWriter().write(jsonResponse);
+        writeResponse(response, responseData);
 
     }
 
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        configureResponse(response);
         Map<String, Object> responseData = new HashMap<>();
 
         Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
@@ -68,14 +81,12 @@ public class TasksServlet extends HttpServlet {
 
         tasksDB.put(idTask, newText);
         responseData.put("status", "success");
-        String jsonResponse = gson.toJson(responseData);
-        response.getWriter().write(jsonResponse);
+        writeResponse(response, responseData);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        configureResponse(response);
         Map<String, Object> responseData = new HashMap<>();
 
         Map<String, Object> data = gson.fromJson(request.getReader(), Map.class);
@@ -84,9 +95,8 @@ public class TasksServlet extends HttpServlet {
 
         if (!tasksDB.containsKey(idTask)){
             responseData.put("status", "error");
-            responseData.put("info", "id is not exist (id = NULL)");
-            String jsonResponse = gson.toJson(responseData);
-            response.getWriter().write(jsonResponse);
+            responseData.put("info", "id is not exist (id = " + idTask + ")");
+            writeResponse(response, responseData);
             return;
         }
         tasksDB.remove(idTask);
@@ -96,6 +106,10 @@ public class TasksServlet extends HttpServlet {
         responseData.put("idTask", idTask);
         responseData.put("deleteText", tasksDB.get(idTask));
 
+        writeResponse(response, responseData);
+    }
+
+    private void writeResponse(HttpServletResponse response, Map<String, Object> responseData) throws IOException {
         String jsonResponse = gson.toJson(responseData);
         response.getWriter().write(jsonResponse);
     }
