@@ -21,7 +21,7 @@ fetch('http://localhost:8080/TasksManager/tasks')
               <input class="text-task" type="text" value="${count++}. ${taskName}">
               <button class="update-task-btn" onclick="updateTask(${id})">Update</button>
           </div>
-          <img src="./img/Basket.png" alt="" class="basket-task">
+          <img src="./img/Basket.png" alt="" class="basket-task" onclick="deleteTaskTapBasket(${id})">
       `;
       container.appendChild(taskElement);
     });
@@ -59,7 +59,7 @@ function addTask() {
                 <input class="text-task" type="text" value="1. ${userText}">
                 <button class="update-task-btn" onclick="updateTask(${id})">Update</button>
             </div>
-            <img src="./img/Basket.png" alt="" class="basket-task">
+            <img src="./img/Basket.png" alt="" class="basket-task" onclick="deleteTaskTapBasket(${id})">
         `;
       container.appendChild(taskElement);
       updateTaskNumbers();
@@ -153,6 +153,35 @@ function deleteTask() {
       alert('Ошибка отправки!');
     });
 }
+
+function deleteTaskTapBasket(id) {
+  fetch('/TasksManager/tasks', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: id
+    }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Успешно:', data);
+      if (data.status == 'error') {
+        console.log(data.info);
+        return;
+      }
+      const taskToDelete = document.querySelector(`.task-block[data-id="${id}"]`);
+      document.getElementById('task').value = '';
+      taskToDelete.remove();
+      updateTaskNumbers();
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+      alert('Ошибка отправки!');
+    });
+}
+
 
 function updateTaskNumbers() {
   const container = document.getElementById('task-container');
